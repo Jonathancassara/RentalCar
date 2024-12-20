@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental List</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold text-center mb-6">Car Rentals</h1>
+        <a href="{% url 'create_rental' %}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
+            Add New Rental
+        </a>
+        <table class="w-full mt-4 bg-white rounded shadow">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-2">Car</th>
+                    <th class="p-2">Driver</th>
+                    <th class="p-2">Rent Date</th>
+                    <th class="p-2">Return Date</th>
+                    <th class="p-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rental in rentals %}
+                <tr class="border-b">
+                    <td class="p-2">{{ rental.car }}</td>
+                    <td class="p-2">{{ rental.driver }}</td>
+                    <td class="p-2">{{ rental.rent_date }}</td>
+                    <td class="p-2">{{ rental.return_date|default:"Not Returned" }}</td>
+                    <td class="p-2">
+                        <a href="{% url 'update_rental' rental.pk %}" class="text-blue-500 hover:underline">Edit</a>
+                        <a href="{% url 'delete_rental' rental.pk %}" class="text-red-500 hover:underline ml-4">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-4 text-center">No rentals found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
