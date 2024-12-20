@@ -46,17 +46,6 @@ python manage.py runserver
 
 ## TODO
 
-- TimeZone UTC --- ok 
-- check phone number / email si deja dans la DB 
-- check if customers are already in DB 
-- ajoute commentaire ( option none )  
-- check format email 
--  Ajoute pied page Footer
-- ajouter Header 
-
-bug : 
--comment update
-
 
 
 
