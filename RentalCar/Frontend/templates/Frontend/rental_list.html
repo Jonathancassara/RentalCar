@@ -85,6 +85,7 @@
                 <tr>
                     <th class="px-4 py-2">Car</th>
                     <th class="px-4 py-2">Driver</th>
+                    <th class="px-4 py-2">Phone Number</th> <!-- Driver's Phone Number -->
                     <th class="px-4 py-2">Rent Date</th>
                     <th class="px-4 py-2">Return Date</th>
                     <th class="px-4 py-2">Comment</th>
@@ -96,6 +97,7 @@
                 <tr class="border-b hover:bg-gray-100">
                     <td class="px-4 py-2">{{ rental.car }}</td>
                     <td class="px-4 py-2">{{ rental.driver }}</td>
+                    <td class="px-4 py-2">{{ rental.driver.phone_number }}</td> <!-- Display phone number -->
                     <td class="px-4 py-2">{{ rental.rent_date }}</td>
                     <td class="px-4 py-2">{{ rental.return_date|default:"Not Returned" }}</td>
                     <td class="px-4 py-2 text-center">
@@ -126,7 +128,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center py-4 text-gray-500">No rentals found.</td>
+                    <td colspan="7" class="text-center py-4 text-gray-500">No rentals found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
