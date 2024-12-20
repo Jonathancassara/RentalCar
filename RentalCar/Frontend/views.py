@@ -5,6 +5,8 @@ from .models import Rental, Driver, Car
 from django.http import JsonResponse
 from .forms import RentalForm, DriverForm, CarForm  # Assume you have created these forms
 from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 def index(request):
     return render(request, 'Frontend/index.html')
@@ -41,7 +43,8 @@ class UpdateRentalView(UpdateView):
     success_url = reverse_lazy('rental_list')
 
     def post(self, request, *args, **kwargs):
-        rental = get_object_or_404(Rental, pk=kwargs['pk'])
+        logger.info("POST data: %s", request.POST)
+        return super().post(request, *args, **kwargs)
         try:
             # Parse return_date from the request
             return_date = request.POST.get('return_date')

@@ -8,7 +8,7 @@
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Modal handling for Finish Rental
+            // Finish Rental Modal
             const returnModal = document.getElementById('returnModal');
             const closeReturnModal = document.getElementById('closeReturnModal');
             const modalForm = document.getElementById('returnForm');
@@ -17,21 +17,24 @@
             const modalRentalId = document.getElementById('rental_id');
             const openReturnButtons = document.querySelectorAll('.finish-btn');
 
-            // Open Finish Rental Modal
-            openReturnButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const rentalId = button.getAttribute('data-id');
-                    const rentalComment = button.getAttribute('data-comment');
-                    modalRentalId.value = rentalId;
-                    modalComment.value = rentalComment || '';
-                    modalForm.action = `/rentals/${rentalId}/finish/`;
-                    returnModal.classList.remove('hidden');
+            if (openReturnButtons) {
+                openReturnButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const rentalId = button.getAttribute('data-id');
+                        const rentalComment = button.getAttribute('data-comment');
+                        if (modalRentalId) modalRentalId.value = rentalId;
+                        if (modalComment) modalComment.value = rentalComment || '';
+                        if (modalForm) modalForm.action = `/rentals/${rentalId}/finish/`;
+                        if (returnModal) returnModal.classList.remove('hidden');
+                    });
                 });
-            });
+            }
 
-            closeReturnModal.addEventListener('click', () => {
-                returnModal.classList.add('hidden');
-            });
+            if (closeReturnModal && returnModal) {
+                closeReturnModal.addEventListener('click', () => {
+                    returnModal.classList.add('hidden');
+                });
+            }
 
             // View Comment Modal
             const commentModal = document.getElementById('commentModal');
@@ -39,26 +42,34 @@
             const closeCommentModal = document.getElementById('closeCommentModal');
             const viewCommentButtons = document.querySelectorAll('.view-comment-btn');
 
-            viewCommentButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const comment = button.getAttribute('data-comment');
-                    commentText.textContent = comment || 'No comment available.';
-                    commentModal.classList.remove('hidden');
+            if (viewCommentButtons) {
+                viewCommentButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const comment = button.getAttribute('data-comment');
+                        if (commentText) commentText.textContent = comment || 'No comment available.';
+                        if (commentModal) commentModal.classList.remove('hidden');
+                    });
                 });
-            });
+            }
 
-            closeCommentModal.addEventListener('click', () => {
-                commentModal.classList.add('hidden');
-            });
+            if (closeCommentModal && commentModal) {
+                closeCommentModal.addEventListener('click', () => {
+                    commentModal.classList.add('hidden');
+                });
+            }
 
             // Set default return date to now
-            const now = new Date();
-            returnDateInput.value = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+            if (returnDateInput) {
+                const now = new Date();
+                returnDateInput.value = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+            }
         });
     </script>
 </head>
 <body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
-    <div class="container mx-auto py-8 px-6">
+    {% include 'Frontend/navbar.html' %}
+
+    <div class="container mx-auto pt-20 px-6">
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Car Rentals</h1>
@@ -122,7 +133,7 @@
         </table>
     </div>
 
-    <!-- Return Modal -->
+    <!-- Finish Rental Modal -->
     <div id="returnModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
             <h2 class="text-2xl font-bold mb-4 text-center">Finish Rental</h2>
