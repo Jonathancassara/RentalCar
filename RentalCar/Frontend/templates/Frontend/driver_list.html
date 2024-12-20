@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drivers Management</title>
+    <title>Drivers List</title>
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
-    <div class="container mx-auto py-8 px-6">
-        <!-- Page Header -->
+    {% include 'Frontend/navbar.html' %} <!-- Include the fixed navbar -->
+
+    <div class="container mx-auto pt-20 px-6">
+        <!-- Header Section -->
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Manage Drivers</h1>
+            <h1 class="text-3xl font-bold text-gray-800">Drivers</h1>
             <a href="{% url 'create_driver' %}" 
                class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition-all">
                 Add New Driver
@@ -19,43 +21,41 @@
         </div>
 
         <!-- Drivers Table -->
-        <div class="bg-white shadow-md rounded-lg">
-            <table class="w-full table-auto">
-                <thead class="bg-gray-200 text-gray-600">
-                    <tr>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Surname</th>
-                        <th class="px-4 py-2">Email</th>
-                        <th class="px-4 py-2">Phone Number</th>
-                        <th class="px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700">
-                    {% for driver in drivers %}
-                    <tr class="border-b hover:bg-gray-100">
-                        <td class="px-4 py-2">{{ driver.name }}</td>
-                        <td class="px-4 py-2">{{ driver.surname }}</td>
-                        <td class="px-4 py-2">{{ driver.email }}</td>
-                        <td class="px-4 py-2">{{ driver.phone_number }}</td>
-                        <td class="px-4 py-2 flex space-x-2">
-                            <a href="{% url 'update_driver' driver.pk %}" 
-                               class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
-                                Edit
-                            </a>
-                            <a href="{% url 'delete_driver' driver.pk %}" 
-                               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-gray-500">No drivers found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <table class="w-full bg-white shadow-md rounded-lg">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2">Name</th>
+                    <th class="px-4 py-2">Surname</th>
+                    <th class="px-4 py-2">Email</th>
+                    <th class="px-4 py-2">Phone Number</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver in drivers %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="px-4 py-2">{{ driver.name }}</td>
+                    <td class="px-4 py-2">{{ driver.surname }}</td>
+                    <td class="px-4 py-2">{{ driver.email|default:"N/A" }}</td>
+                    <td class="px-4 py-2">{{ driver.phone_number }}</td>
+                    <td class="px-4 py-2 flex space-x-2">
+                        <a href="{% url 'update_driver' driver.pk %}" 
+                           class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                            Edit
+                        </a>
+                        <a href="{% url 'delete_driver' driver.pk %}" 
+                           class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">No drivers found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
