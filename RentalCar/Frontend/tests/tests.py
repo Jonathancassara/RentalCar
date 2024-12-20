@@ -1,8 +1,9 @@
 from django.test import TestCase
-from Frontend.models import Driver, Car, Rental
-from datetime import datetime
+from django.utils.timezone import now
+from Frontend.forms import RentalForm
+from Frontend.models import Driver, Car
 
-class ModelTests(TestCase):
+class RentalFormTests(TestCase):
     def setUp(self):
         self.driver = Driver.objects.create(
             name="John",
@@ -16,14 +17,10 @@ class ModelTests(TestCase):
             registration_number="ABC123"
         )
 
-    def test_driver_creation(self):
-        self.assertEqual(self.driver.name, "John")
-        self.assertEqual(self.driver.surname, "Doe")
-        self.assertEqual(self.driver.email, "john@example.com")
-        self.assertEqual(self.driver.phone_number, "1234567890")
-
-    def test_car_creation(self):
-        self.assertEqual(self.car.make, "Toyota")
-        self.assertEqual(self.car.model, "Corolla")
-        self.assertEqual(self.car.registration_number, "ABC123")
-        self.assertTrue(self.car.is_available)
+    def test_rental_form_valid(self):
+        form = RentalForm(data={
+            'car': self.car.id,
+            'driver': self.driver.id,
+            'rent_date': now()  # Use timezone-aware datetime
+        })
+        self.assertTrue(form.is_valid())
