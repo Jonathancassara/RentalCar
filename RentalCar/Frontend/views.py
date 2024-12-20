@@ -97,6 +97,7 @@ class DriverListView(ListView):
     model = Driver
     template_name = 'Frontend/driver_list.html'
     context_object_name = 'drivers'
+    
 class CreateDriverView(CreateView):
     model = Driver
     form_class = DriverForm  # Use custom form with validation

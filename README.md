@@ -42,6 +42,8 @@ python manage.py runserver
 pip freeze > requirements.txt
 
 pip install -r /path/to/requirements.txt
+
+python manage.py test Frontend --verbosity 2
 ```
 
 ## Authors
