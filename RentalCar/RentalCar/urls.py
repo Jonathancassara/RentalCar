@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+from Frontend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Frontend.urls')),  # Include Frontend app URLs
+    path('', views.home, name='home'),  # Root URL points to the home view
+    path('rentals/', include('Frontend.urls')),  # Include Frontend app URLs
 ]

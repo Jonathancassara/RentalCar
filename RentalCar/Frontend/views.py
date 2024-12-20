@@ -1,4 +1,82 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .models import Rental, Driver, Car
+from .forms import RentalForm, DriverForm, CarForm  # Assume you have created these forms
 
 def index(request):
     return render(request, 'Frontend/index.html')
+
+def home(request):
+    return render(request, 'Frontend/home.html')
+
+# Rental Views
+class RentalListView(ListView):
+    model = Rental
+    template_name = 'Frontend/rental_list.html'
+    context_object_name = 'rentals'
+
+    def get_queryset(self):
+        return Rental.objects.select_related('car', 'driver').all()
+
+class CreateRentalView(CreateView):
+    model = Rental
+    form_class = RentalForm
+    template_name = 'Frontend/rental_form.html'
+    success_url = reverse_lazy('rental_list')
+
+    def form_valid(self, form):
+        rental = form.save(commit=False)
+        # Ensure the car is marked as unavailable
+        rental.car.is_available = False
+        rental.car.save()
+        return super().form_valid(form)
+
+class UpdateRentalView(UpdateView):
+    model = Rental
+    form_class = RentalForm
+    template_name = 'Frontend/rental_form.html'
+    success_url = reverse_lazy('rental_list')
+
+    def form_valid(self, form):
+        rental = form.save(commit=False)
+        if rental.return_date:  # Car is being returned
+            rental.car.is_available = True
+            rental.car.save()
+        return super().form_valid(form)
+
+class DeleteRentalView(DeleteView):
+    model = Rental
+    template_name = 'Frontend/rental_confirm_delete.html'
+    success_url = reverse_lazy('rental_list')
+
+    def delete(self, request, *args, **kwargs):
+        rental = self.get_object()
+        # Mark the car as available before deleting the rental
+        rental.car.is_available = True
+        rental.car.save()
+        return super().delete(request, *args, **kwargs)
+
+# Driver Views
+class DriverListView(ListView):
+    model = Driver
+    template_name = 'Frontend/driver_list.html'
+    context_object_name = 'drivers'
+
+class CreateDriverView(CreateView):
+    model = Driver
+    form_class = DriverForm
+    template_name = 'Frontend/driver_form.html'
+    success_url = reverse_lazy('driver_list')
+
+# Car Views
+class CarListView(ListView):
+    model = Car
+    template_name = 'Frontend/car_list.html'
+    context_object_name = 'cars'
+
+class CreateCarView(CreateView):
+    model = Car
+    form_class = CarForm
+    template_name = 'Frontend/car_form.html'
+    success_url = reverse_lazy('car_list')
