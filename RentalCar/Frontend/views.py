@@ -75,6 +75,19 @@ class DeleteRentalView(DeleteView):
         rental.car.is_available = True
         rental.car.save()
         return super().delete(request, *args, **kwargs)
+    
+class FinishRentalView(UpdateView):
+    model = Rental
+    fields = ['return_date', 'comments']
+    success_url = reverse_lazy('rental_list')
+    template_name = 'Frontend/rental_form.html'
+
+    def post(self, request, *args, **kwargs):
+        rental = get_object_or_404(Rental, pk=kwargs['pk'])
+        rental.return_date = request.POST.get('return_date')
+        rental.comments = request.POST.get('comments', rental.comments)
+        rental.save()
+        return redirect(self.success_url)
 
 # Driver Views
 class DriverListView(ListView):

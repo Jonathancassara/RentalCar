@@ -7,6 +7,7 @@ urlpatterns = [
     path('list/', views.RentalListView.as_view(), name='rental_list'),  # List all rentals
     path('new/', views.CreateRentalView.as_view(), name='create_rental'),  # Create a new rental
     path('<int:pk>/update/', views.UpdateRentalView.as_view(), name='update_rental'),  # Update a rental (return car)
+    path('<int:pk>/finish/', views.FinishRentalView.as_view(), name='finish_rental'),
     path('<int:pk>/delete/', views.DeleteRentalView.as_view(), name='delete_rental'),  # Delete a rental
 
     # Driver-related URLs
