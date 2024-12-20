@@ -1,5 +1,7 @@
 from django import forms
 from .models import Rental, Driver, Car
+from django.db.models import Q # Import Q for complex queries
+from django.utils.timezone import localtime
 
 class RentalForm(forms.ModelForm):
     class Meta:
@@ -11,7 +13,8 @@ class RentalForm(forms.ModelForm):
             'rent_date': forms.DateTimeInput(attrs={
                 'type': 'datetime-local',
                 'class': 'form-control',
-                'value': '',  # This will be set dynamically via JavaScript
+                'value': localtime().strftime('%Y-%m-%dT%H:%M'),  # Default to local time
+                
             }),
             'return_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
             'comments': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Add comments here'}),
@@ -19,7 +22,15 @@ class RentalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['car'].queryset = Car.objects.filter(is_available=True)
+        if self.instance and self.instance.pk:
+            # Include the currently rented car and available cars
+            self.fields['car'].queryset = Car.objects.filter(
+                Q(is_available=True) | Q(pk=self.instance.car.pk)
+            )
+        else:
+            # Only show available cars for new rentals
+            self.fields['car'].queryset = Car.objects.filter(is_available=True)
+
 
     def clean_car(self):
         """

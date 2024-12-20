@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     # Rental-related URLs
-    path('', views.RentalListView.as_view(), name='rental_list'),  # List all rentals
+    path('', views.home, name='home'),
+    path('list/', views.RentalListView.as_view(), name='rental_list'),  # List all rentals
     path('new/', views.CreateRentalView.as_view(), name='create_rental'),  # Create a new rental
     path('<int:pk>/update/', views.UpdateRentalView.as_view(), name='update_rental'),  # Update a rental (return car)
     path('<int:pk>/delete/', views.DeleteRentalView.as_view(), name='delete_rental'),  # Delete a rental

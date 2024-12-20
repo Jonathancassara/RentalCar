@@ -39,10 +39,10 @@ class UpdateRentalView(UpdateView):
     success_url = reverse_lazy('rental_list')
 
     def form_valid(self, form):
+        # Save the rental and include comments
         rental = form.save(commit=False)
-        if rental.return_date:  # Car is being returned
-            rental.car.is_available = True
-            rental.car.save()
+        rental.comments = form.cleaned_data.get('comments')  # Ensure comments are saved
+        rental.save()
         return super().form_valid(form)
 
 class DeleteRentalView(DeleteView):

@@ -27,9 +27,10 @@ class Rental(models.Model):
     comments = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
-        if self.return_date:  # Car is returned
+        # Update car availability based on rental status
+        if self.return_date:  # If returned
             self.car.is_available = True
-        else:  # Car is rented
+        else:  # If still rented
             self.car.is_available = False
         self.car.save()
         super().save(*args, **kwargs)

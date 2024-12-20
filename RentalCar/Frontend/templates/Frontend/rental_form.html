@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Rental</title>
+    <title>Create a New Rental</title>
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <script>
+        // Set the current date and time in the rent date field on page load
         document.addEventListener('DOMContentLoaded', function () {
             const rentDateField = document.querySelector('#id_rent_date');
             if (rentDateField) {
@@ -18,36 +19,53 @@
         });
     </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Create a New Rental</h1>
-        <form method="post" class="space-y-4">
+<body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-xl rounded-3xl p-8 max-w-lg w-full">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Create a New Rental</h1>
+        <form method="post" class="space-y-6">
             {% csrf_token %}
+            
+            <!-- Car Selection -->
             <div>
-                <label for="id_car" class="block text-sm font-medium text-gray-700 mb-2">Select Car</label>
-                {{ form.car }}
+                <label for="id_car" class="block text-sm font-medium text-gray-700 mb-1">Select Car</label>
+                {{ form.car|add_class:"block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" }}
             </div>
+            
+            <!-- Driver Selection -->
             <div>
-                <label for="id_driver" class="block text-sm font-medium text-gray-700 mb-2">Select Driver</label>
-                {{ form.driver }}
+                <label for="id_driver" class="block text-sm font-medium text-gray-700 mb-1">Select Driver</label>
+                {{ form.driver|add_class:"block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" }}
             </div>
+            
+            <!-- Rent Date -->
             <div>
-                <label for="id_rent_date" class="block text-sm font-medium text-gray-700 mb-2">Rent Date</label>
-                {{ form.rent_date }}
+                <label for="id_rent_date" class="block text-sm font-medium text-gray-700 mb-1">Rent Date</label>
+                {{ form.rent_date|add_class:"block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" }}
             </div>
+            
+            <!-- Return Date -->
             <div>
-                <label for="id_return_date" class="block text-sm font-medium text-gray-700 mb-2">Return Date (optional)</label>
-                {{ form.return_date }}
+                <label for="id_return_date" class="block text-sm font-medium text-gray-700 mb-1">Return Date (optional)</label>
+                {{ form.return_date|add_class:"block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" }}
             </div>
+            
+            <!-- Comments -->
             <div>
                 <label for="id_comments" class="block text-sm font-medium text-gray-700 mb-2">Comments (optional)</label>
                 {{ form.comments }}
             </div>
+            
+            
+            <!-- Submit Button -->
             <div class="text-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Save Rental</button>
+                <button type="submit" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-all">
+                    Save Rental
+                </button>
             </div>
         </form>
-        <div class="text-center mt-4">
+
+        <!-- Back Link -->
+        <div class="text-center mt-6">
             <a href="{% url 'rental_list' %}" class="text-blue-500 hover:underline">Back to Rentals List</a>
         </div>
     </div>
