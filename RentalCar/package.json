@@ -1,0 +1,22 @@
+{
+  "name": "rentalcar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+   
+  "build:css": "npx tailwindcss -i ./Frontend/static/css/style.css -o ./Frontend/static/css/output.css --watch",
+
+
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
