@@ -14,6 +14,7 @@ class Car(models.Model):
     make = models.CharField(max_length=50)  # Make: text, max 50 chars, not null
     model = models.CharField(max_length=100)  # Model: text, max 100 chars, not null
     registration_number = models.CharField(max_length=10, unique=True)  # RegistrationNumber: text, max 10 chars, not null
+    is_available = models.BooleanField(default=True)  # Tracks if the car is available for rent
 
     def __str__(self):
         return f"{self.make} {self.model} ({self.registration_number})"
@@ -25,6 +26,21 @@ class Rental(models.Model):
     rent_date = models.DateTimeField()  # RentDate: date time, not null
     return_date = models.DateTimeField(null=True, blank=True)  # ReturnDate: date time, nullable
     comments = models.TextField(blank=True)  # Comments: text, no length specified, nullable
+
+    def save(self, *args, **kwargs):
+        # Update car availability when rental is created or closed
+        if self.return_date:  # Car returned
+            self.car.is_available = True
+        else:  # Car rented
+            self.car.is_available = False
+        self.car.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Mark the car as available when a rental is deleted
+        self.car.is_available = True
+        self.car.save()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return f"Rental of {self.car} by {self.driver} on {self.rent_date}"
