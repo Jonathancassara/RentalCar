@@ -8,14 +8,17 @@ class RentalForm(forms.ModelForm):
         widgets = {
             'car': forms.Select(attrs={'class': 'form-control'}),
             'driver': forms.Select(attrs={'class': 'form-control'}),
-            'rent_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'rent_date': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control',
+                'value': '',  # This will be set dynamically via JavaScript
+            }),
             'return_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
             'comments': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Add comments here'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filter available cars
         self.fields['car'].queryset = Car.objects.filter(is_available=True)
 
     def clean_car(self):
