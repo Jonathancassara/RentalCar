@@ -19,22 +19,21 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.make} {self.model} ({self.registration_number})"
 
-
 class Rental(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)  # CarId: foreign key to Cars table
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)  # DriverId: foreign key to Drivers table
-    rent_date = models.DateTimeField()  # RentDate: date time, not null
-    return_date = models.DateTimeField(null=True, blank=True)  # ReturnDate: date time, nullable
-    comments = models.TextField(blank=True)  # Comments: text, no length specified, nullable
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    rent_date = models.DateTimeField()
+    return_date = models.DateTimeField(null=True, blank=True)
+    comments = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
-        # Update car availability when rental is created or closed
-        if self.return_date:  # Car returned
+        if self.return_date:  # Car is returned
             self.car.is_available = True
-        else:  # Car rented
+        else:  # Car is rented
             self.car.is_available = False
         self.car.save()
         super().save(*args, **kwargs)
+
 
     def delete(self, *args, **kwargs):
         # Mark the car as available when a rental is deleted
