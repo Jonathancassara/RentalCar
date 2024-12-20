@@ -12,8 +12,13 @@ urlpatterns = [
     # Driver-related URLs
     path('drivers/', views.DriverListView.as_view(), name='driver_list'),  # List all drivers
     path('drivers/new/', views.CreateDriverView.as_view(), name='create_driver'),  # Add a new driver
+    path('drivers/<int:pk>/update/', views.UpdateDriverView.as_view(), name='update_driver'),
+    path('drivers/<int:pk>/delete/', views.DeleteDriverView.as_view(), name='delete_driver'),
 
     # Car-related URLs
-    path('cars/', views.CarListView.as_view(), name='car_list'),  # List all cars
-    path('cars/new/', views.CreateCarView.as_view(), name='create_car'),  # Add a new car
+     path('cars/', views.CarListView.as_view(), name='car_list'),
+    path('cars/new/', views.CreateCarView.as_view(), name='create_car'),
+    path('cars/<int:pk>/update/', views.UpdateCarView.as_view(), name='update_car'),
+    path('cars/<int:pk>/delete/', views.DeleteCarView.as_view(), name='delete_car'),
+
 ]

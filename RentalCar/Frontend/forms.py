@@ -47,12 +47,25 @@ class DriverForm(forms.ModelForm):
         model = Driver
         fields = ['name', 'surname', 'email', 'phone_number']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}),
-            'surname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'surname': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        # Exclude the current instance when checking for uniqueness
+        if Driver.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("A driver with this email already exists.")
+        return email
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        # Exclude the current instance when checking for uniqueness
+        if Driver.objects.filter(phone_number=phone_number).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("A driver with this phone number already exists.")
+        return phone_number
 
 class CarForm(forms.ModelForm):
     class Meta:

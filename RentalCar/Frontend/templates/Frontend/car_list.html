@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars Management</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
+    <div class="container mx-auto py-8 px-6">
+        <!-- Page Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Manage Cars</h1>
+            <button 
+                id="addCarBtn" 
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition-all">
+                Add New Car
+            </button>
+        </div>
+
+        <!-- Cars Table -->
+        <div class="bg-white shadow-md rounded-lg">
+            <table class="w-full table-auto">
+                <thead class="bg-gray-200 text-gray-600">
+                    <tr>
+                        <th class="px-4 py-2">Make</th>
+                        <th class="px-4 py-2">Model</th>
+                        <th class="px-4 py-2">Registration Number</th>
+                        <th class="px-4 py-2">Availability</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700">
+                    {% for car in cars %}
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="px-4 py-2">{{ car.make }}</td>
+                        <td class="px-4 py-2">{{ car.model }}</td>
+                        <td class="px-4 py-2">{{ car.registration_number }}</td>
+                        <td class="px-4 py-2">{{ car.is_available|yesno:"Available,Unavailable" }}</td>
+                        <td class="px-4 py-2 flex space-x-2">
+                            <a href="{% url 'update_car' car.pk %}" 
+                               class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                                Edit
+                            </a>
+                            <a href="{% url 'delete_car' car.pk %}" 
+                               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">No cars found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Car Modal -->
+    <div id="addCarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h2 class="text-xl font-bold mb-4">Add New Car</h2>
+            <form method="post" action="{% url 'create_car' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="make" class="block text-sm font-medium text-gray-700">Make</label>
+                    <input type="text" name="make" id="make" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label for="model" class="block text-sm font-medium text-gray-700">Model</label>
+                    <input type="text" name="model" id="model" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label for="registration_number" class="block text-sm font-medium text-gray-700">Registration Number</label>
+                    <input type="text" name="registration_number" id="registration_number" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="closeModal" 
+                            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Add Car
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal handling
+        const addCarBtn = document.getElementById('addCarBtn');
+        const addCarModal = document.getElementById('addCarModal');
+        const closeModal = document.getElementById('closeModal');
+
+        addCarBtn.addEventListener('click', () => addCarModal.classList.remove('hidden'));
+        closeModal.addEventListener('click', () => addCarModal.classList.add('hidden'));
+    </script>
+</body>
+</html>

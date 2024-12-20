@@ -62,11 +62,21 @@ class DriverListView(ListView):
     model = Driver
     template_name = 'Frontend/driver_list.html'
     context_object_name = 'drivers'
-
 class CreateDriverView(CreateView):
+    model = Driver
+    form_class = DriverForm  # Use custom form with validation
+    template_name = 'Frontend/driver_form.html'
+    success_url = reverse_lazy('driver_list')
+
+class UpdateDriverView(UpdateView):
     model = Driver
     form_class = DriverForm
     template_name = 'Frontend/driver_form.html'
+    success_url = reverse_lazy('driver_list')
+
+class DeleteDriverView(DeleteView):
+    model = Driver
+    template_name = 'Frontend/driver_confirm_delete.html'
     success_url = reverse_lazy('driver_list')
 
 # Car Views
@@ -77,6 +87,16 @@ class CarListView(ListView):
 
 class CreateCarView(CreateView):
     model = Car
-    form_class = CarForm
-    template_name = 'Frontend/car_form.html'
+    fields = ['make', 'model', 'registration_number']
     success_url = reverse_lazy('car_list')
+
+class UpdateCarView(UpdateView):
+    model = Car
+    fields = ['make', 'model', 'registration_number']
+    template_name = 'Frontend/car_form.html'  # Custom template for editing cars
+    success_url = reverse_lazy('car_list')  # Redirect to the car list after updating
+
+class DeleteCarView(DeleteView):
+    model = Car
+    template_name = 'Frontend/car_confirm_delete.html'  # Custom confirmation template
+    success_url = reverse_lazy('car_list')  # Redirect to the cars list after deletion

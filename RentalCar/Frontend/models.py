@@ -1,10 +1,10 @@
 from django.db import models
 
 class Driver(models.Model):
-    name = models.CharField(max_length=50)  # Name: text, max 50 chars, not null
-    surname = models.CharField(max_length=50)  # Surname: text, max 50 chars, not null
-    email = models.EmailField(max_length=100)  # Email: text, max 100 chars, not null
-    phone_number = models.CharField(max_length=50)  # PhoneNumber: text, max 50 chars, not null
+    name = models.CharField(max_length=50)
+    surname = models.CharField(max_length=50)
+    email = models.EmailField(max_length=100, unique=True)  # Ensure email is unique
+    phone_number = models.CharField(max_length=15, unique=True)  # Ensure phone number is unique
 
     def __str__(self):
         return f"{self.name} {self.surname}"
