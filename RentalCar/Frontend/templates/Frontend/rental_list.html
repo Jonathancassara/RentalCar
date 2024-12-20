@@ -7,79 +7,126 @@
     <title>Rental List</title>
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <script>
-        // JavaScript to handle modal popup
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('comment-modal');
-            const modalContent = document.getElementById('modal-content');
-            const closeModal = document.getElementById('close-modal');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Modal handling for Finish Rental
+            const modal = document.getElementById('returnModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalForm = document.getElementById('returnForm');
+            const returnDateInput = document.getElementById('return_date');
+            const modalComment = document.getElementById('return_comment');
+            const modalRentalId = document.getElementById('rental_id');
+            const openModalButtons = document.querySelectorAll('.finish-btn');
 
-            document.querySelectorAll('.view-comment-btn').forEach(button => {
+            // Open modal
+            openModalButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const comment = button.getAttribute('data-comment');
-                    modalContent.textContent = comment ? comment : "No comments available.";
+                    const rentalId = button.getAttribute('data-id');
+                    const rentalComment = button.getAttribute('data-comment');
+                    modalRentalId.value = rentalId;
+                    modalComment.value = rentalComment || '';
                     modal.classList.remove('hidden');
                 });
             });
 
+            // Close modal
             closeModal.addEventListener('click', () => {
                 modal.classList.add('hidden');
             });
+
+            // Set default return date to now
+            const now = new Date();
+                    returnDateInput.value = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+
         });
     </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold text-center mb-6">Car Rentals</h1>
-        <a href="{% url 'create_rental' %}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
-            Add New Rental
-        </a>
-        <table class="w-full mt-4 bg-white rounded shadow">
+<body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
+    <div class="container mx-auto py-8 px-6">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Car Rentals</h1>
+            <a href="{% url 'create_rental' %}" 
+               class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition-all">
+                New Rental
+            </a>
+        </div>
+
+        <!-- Rentals Table -->
+        <table class="w-full bg-white shadow-md rounded-lg">
             <thead class="bg-gray-200">
                 <tr>
-                    <th class="p-2">Car</th>
-                    <th class="p-2">Driver</th>
-                    <th class="p-2">Rent Date</th>
-                    <th class="p-2">Return Date</th>
-                    <th class="p-2">Comments</th>
-                    <th class="p-2">Actions</th>
+                    <th class="px-4 py-2">Car</th>
+                    <th class="px-4 py-2">Driver</th>
+                    <th class="px-4 py-2">Rent Date</th>
+                    <th class="px-4 py-2">Return Date</th>
+                    <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for rental in rentals %}
-                <tr class="border-b">
-                    <td class="p-2">{{ rental.car }}</td>
-                    <td class="p-2">{{ rental.driver }}</td>
-                    <td class="p-2">{{ rental.rent_date }}</td>
-                    <td class="p-2">{{ rental.return_date|default:"Not Returned" }}</td>
-                    <td class="p-2 text-center">
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="px-4 py-2">{{ rental.car }}</td>
+                    <td class="px-4 py-2">{{ rental.driver }}</td>
+                    <td class="px-4 py-2">{{ rental.rent_date }}</td>
+                    <td class="px-4 py-2">{{ rental.return_date|default:"Not Returned" }}</td>
+                    <td class="px-4 py-2 flex space-x-2">
+                        <a href="{% url 'update_rental' rental.pk %}" 
+                           class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                            Edit
+                        </a>
+                        {% if not rental.return_date %}
                         <button 
-                            class="view-comment-btn text-blue-500 underline"
-                            data-comment="{{ rental.comments|default:'' }}">
-                            View
+                            class="finish-btn bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                            data-id="{{ rental.id }}"
+                            data-comment="{{ rental.comments }}">
+                            Finish Rental
                         </button>
-                    </td>
-                    <td class="p-2">
-                        <a href="{% url 'update_rental' rental.pk %}" class="text-blue-500 hover:underline">Edit</a>
-                        <a href="{% url 'delete_rental' rental.pk %}" class="text-red-500 hover:underline ml-4">Delete</a>
+                        {% endif %}
+                        <a href="{% url 'delete_rental' rental.pk %}" 
+                           class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                            Delete
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="p-4 text-center">No rentals found.</td>
+                    <td colspan="5" class="text-center py-4 text-gray-500">No rentals found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <!-- Modal for displaying comments -->
-    <div id="comment-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-            <h2 class="text-xl font-bold mb-4">Comments</h2>
-            <p id="modal-content" class="text-gray-700"></p>
-            <button id="close-modal" class="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Close
-            </button>
+    <!-- Return Modal -->
+    <div id="returnModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4 text-center">Finish Rental</h2>
+            <form id="returnForm" method="post" action="{% url 'update_rental' 0 %}" 
+                onsubmit="this.action = this.action.replace('0', document.getElementById('rental_id').value);">
+                {% csrf_token %}
+                <input type="hidden" id="rental_id" name="rental_id">
+                <div class="mb-4">
+                    <label for="return_date" class="block text-sm font-medium text-gray-700">Return Date</label>
+                    <input type="datetime-local" id="return_date" name="return_date" 
+                            class="block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+
+                </div>
+                <div class="mb-4">
+                    <label for="return_comment" class="block text-sm font-medium text-gray-700">Comment (Optional)</label>
+                    <textarea id="return_comment" name="comments" 
+                              class="block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="closeModal" 
+                            class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

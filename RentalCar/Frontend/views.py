@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Rental, Driver, Car
+from django.http import JsonResponse
 from .forms import RentalForm, DriverForm, CarForm  # Assume you have created these forms
+from datetime import datetime
 
 def index(request):
     return render(request, 'Frontend/index.html')
@@ -34,9 +36,26 @@ class CreateRentalView(CreateView):
 
 class UpdateRentalView(UpdateView):
     model = Rental
-    form_class = RentalForm
+    fields = ['car', 'driver', 'rent_date', 'return_date', 'comments']
     template_name = 'Frontend/rental_form.html'
     success_url = reverse_lazy('rental_list')
+
+    def post(self, request, *args, **kwargs):
+        rental = get_object_or_404(Rental, pk=kwargs['pk'])
+        try:
+            # Parse return_date from the request
+            return_date = request.POST.get('return_date')
+            if return_date:
+                rental.return_date = datetime.strptime(return_date, '%Y-%m-%dT%H:%M')
+            else:
+                return JsonResponse({'error': 'Return date is required'}, status=400)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid return date format'}, status=400)
+
+        # Update the comment (optional field)
+        rental.comments = request.POST.get('comments', rental.comments)
+        rental.save()
+        return redirect(self.success_url)
 
     def form_valid(self, form):
         # Save the rental and include comments
